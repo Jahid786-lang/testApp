@@ -17,7 +17,7 @@ const SignUpScreen = () => {
 
   const onSubmit = async data => {
     try {
-      await AsyncStorage.setItem('user', JSON.stringify(data));
+      await AsyncStorage.setItem('userData', JSON.stringify(data));
       navigation.navigate('Signin');
     } catch (error) {
       console.error('Failed to save the data to AsyncStorage', error);

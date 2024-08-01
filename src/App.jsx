@@ -14,6 +14,7 @@ import {
   useColorScheme,
 } from 'react-native';
 import {Colors} from 'react-native/Libraries/NewAppScreen';
+import {GestureHandlerRootView} from 'react-native-gesture-handler';
 import {
   SafeAreaProvider,
   initialWindowMetrics,
@@ -31,17 +32,19 @@ function App() {
   };
 
   return (
-    <QueryClientProvider client={queryClient}>
-      <SafeAreaProvider initialMetrics={initialWindowMetrics}>
-        <StatusBar
-          barStyle={isDarkMode ? 'light-content' : 'dark-content'}
-          backgroundColor={'#df1f26'}
-        />
-        <SafeAreaView style={backgroundStyle}>
-          <RootNavigation />
-        </SafeAreaView>
-      </SafeAreaProvider>
-    </QueryClientProvider>
+    <GestureHandlerRootView style={{flex: 1}}>
+      <QueryClientProvider client={queryClient}>
+        <SafeAreaProvider initialMetrics={initialWindowMetrics}>
+          <StatusBar
+            barStyle={isDarkMode ? 'light-content' : 'dark-content'}
+            backgroundColor={'#df1f26'}
+          />
+          <SafeAreaView style={backgroundStyle}>
+            <RootNavigation />
+          </SafeAreaView>
+        </SafeAreaProvider>
+      </QueryClientProvider>
+    </GestureHandlerRootView>
   );
 }
 

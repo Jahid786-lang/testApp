@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import {
   View,
   Text,
@@ -11,11 +11,31 @@ import {useQuery} from 'react-query';
 import theme from '../../utils/theme';
 import {fetchTrendingGifs} from '../../services/gifsServices';
 
-const Home = ({route}) => {
-  const {user} = route.params;
+import AsyncStorage from '@react-native-async-storage/async-storage';
+const Home = ({route }) => {
+  // const {user} = user;
   const [page, setPage] = useState(1);
   const [data, setData] = useState([]);
   const [isFetchingNextPage, setIsFetchingNextPage] = useState(false);
+ const [user, setUser] = useState();
+
+  useEffect(() => {
+    const fetchUserData = async () => {
+      try {
+        const storedUser = await AsyncStorage.getItem('user');
+        if (storedUser !== null) {
+          const parsedUser = JSON.parse(storedUser);
+          setUser(parsedUser);
+        } else {
+          console.log('No user data found in AsyncStorage');
+        }
+      } catch (error) {
+        console.error('Failed to retrieve user data from AsyncStorage', error);
+      }
+    };
+
+    fetchUserData();
+  }, []);
 
   const {error, isLoading} = useQuery(
     ['trendingGifs', page],
@@ -44,14 +64,17 @@ const Home = ({route}) => {
       />
     </View>
   );
+  console.log("user>>>>>>>>>>>", typeof user )
+  
   return (
     <>
       <View style={styles.welcomeContainer}>
         <Text style={styles.welcomeText}>
-          Welcome, {user.firstName} {user.lastName}!
+          {/* Welcome, {user.firstName} {user.lastName}! */}
+          Welcome, {user?.firstName || ''} {user?.lastName || ''}!
         </Text>
       </View>
-      {isLoading && page === 1 ? (
+      {/* {isLoading && page === 1 ? (
         <View style={styles.center}>
           <ActivityIndicator size="large" color={theme.red} />
         </View>
@@ -75,7 +98,7 @@ const Home = ({route}) => {
             }
           />
         </View>
-      )}
+      )} */}
     </>
   );
 };

@@ -5,24 +5,26 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import ButtonComponent from '../../components/button';
 import FormInput from '../../components/formInput';
 import theme from '../../utils/theme';
+import { useNavigation } from '@react-navigation/native';
 
-const Signin = ({navigation}) => {
+const Signin = () => {
   const {
     control,
     handleSubmit,
     formState: {errors, isValid},
   } = useForm({mode: 'onChange'});
-
+const navigation = useNavigation()
   const onSubmit = async data => {
     try {
-      const storedUser = await AsyncStorage.getItem('user');
+      const storedUser = await AsyncStorage.getItem('userData');
       if (storedUser !== null) {
         const parsedUser = JSON.parse(storedUser);
         if (
           data.email === parsedUser.email &&
           data.password === parsedUser.password
         ) {
-          navigation.navigate('Home', {user: parsedUser});
+          await AsyncStorage.setItem('user', JSON.stringify(storedUser));
+          navigation.navigate('Main', {user: storedUser});
         } else {
           Alert.alert('Invalid Credentials', 'Email or password is incorrect.');
         }
@@ -73,6 +75,7 @@ const Signin = ({navigation}) => {
       <ButtonComponent
         title={'Signin'}
         disabled={!isValid}
+        isLoading={false}
         onPressButton={handleSubmit(onSubmit)}
       />
       <View style={styles.signUpRowStyle}>
